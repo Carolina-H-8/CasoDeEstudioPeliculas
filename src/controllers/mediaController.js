@@ -2,7 +2,7 @@
 import {
     createMediaService,
     getMediaService
-} from "../services/mediaService.js";
+} from "../service/mediaService.js";
 
 export const createMedia = async (req, res) => {
     try {
@@ -10,38 +10,51 @@ export const createMedia = async (req, res) => {
         const {
             serial,
             title,
+            synopsis,
             url,
+            coverImage,
             releaseYear,
-            typeId,
-            directorId,
-            productionCompanyId
-        } = req.body ?? {};
-
+            type,
+            director,
+            productionCompany,
+            genreNames = []
+        } = req.body;
         // Validar campos obligatorios
         if (
-            !serial ||
-            !title ||
-            !url ||
-            releaseYear == null ||
-            !typeId ||
-            !directorId ||
-            !productionCompanyId
+            !serial?.trim() ||
+            !title?.trim() ||
+            !url?.trim() ||
+            releaseYear === undefined ||
+            releaseYear === null ||
+            !Number.isInteger(Number(releaseYear)) ||
+            !type?.trim() ||
+            !director?.trim() ||
+            !productionCompany?.trim()
         ) {
             return res.status(400).json({
                 error: "Validación fallida",
-                details: "Los campos serial, title, url, releaseYear, typeId, directorId y productionCompanyId son obligatorios"
+                details: "Los campos serial, title, url, releaseYear, type, director y productionCompany son obligatorios. releaseYear debe ser un año entero."
+            });
+        }
+        if (!Array.isArray(genreNames)) {
+            return res.status(400).json({
+                error: "Validación fallida",
+                details: "genreNames debe ser una lista de nombres de géneros."
             });
         }
 
         // Enviar los datos al servicio
         const media = await createMediaService({
-            serial,
-            title,
-            url,
-            releaseYear,
-            typeId,
-            directorId,
-            productionCompanyId
+            serial: serial.trim(),
+            title: title.trim(),
+            synopsis,
+            url: url.trim(),
+            coverImage,
+            releaseYear: Number(releaseYear),
+            type: type.trim(),
+            director: director.trim(),
+            productionCompany: productionCompany.trim(),
+            genreNames
         });
 
         return res.status(201).json(media);

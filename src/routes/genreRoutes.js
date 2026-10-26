@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { createGenre, getGenres } from '../controller/catalogController.js';
+import { createGenre, getGenres } from '../controllers/catalogController.js';
 
 const router = Router();
 

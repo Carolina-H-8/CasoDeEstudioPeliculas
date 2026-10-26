@@ -1,5 +1,5 @@
 
-import * as catalogService from '../services/catalogService.js';
+import * as catalogService from '../service/catalogService.js';
 
 // Recibe las solicitudes HTTP, llama al servicio y devuelve JSON.
 const handleRequest = async (res, serviceMethod, status = 200) => {
